@@ -11,12 +11,20 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
+import net.minecraft.util.Util
 import net.minecraft.world.level.biome.Biome
 
 object NowEnteringClient : ClientModInitializer {
-    var biomeChangedWidgetActive = false
+
+    private val biomeWidget = NewBiomeWidget(100, 0, 100, 27)
 
     override fun onInitializeClient() {
+        HudElementRegistry.attachElementBefore(
+            VanillaHudElements.CHAT,
+            NowEntering.id("biome_changed"),
+            biomeWidget
+        )
+
         var lastBiomeId: Identifier? = null
 
         ClientTickEvents.START_CLIENT_TICK.register { client ->
@@ -36,16 +44,9 @@ object NowEnteringClient : ClientModInitializer {
     }
 
     private fun onBiomeChange(player: LocalPlayer, newBiomeId: Identifier) {
-        println("Biome changed: $newBiomeId")
         val translationKey = "biome.${newBiomeId.namespace}.${newBiomeId.path}"
         val localizedName = Component.translatable(translationKey).string
 
-        if (!biomeChangedWidgetActive) {
-            HudElementRegistry.attachElementBefore(
-                VanillaHudElements.CHAT, NowEntering.id("biome_changed"),
-                NewBiomeWidget(100, 0, 100, 27, localizedName)
-            )
-            biomeChangedWidgetActive = true
-        }
+        biomeWidget.show(localizedName)
     }
 }

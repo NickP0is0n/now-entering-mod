@@ -1,32 +1,46 @@
 package me.nickp0is0n.client.widgets
 
+import me.nickp0is0n.NowEntering
+import me.nickp0is0n.client.NowEnteringClient
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
+import net.minecraft.util.Util
 
 class NewBiomeWidget(
     private val x: Int,
     private val y: Int,
     private val width: Int,
-    private val height: Int,
-    private val biome: String
+    private val height: Int
 ) :
     HudElement {
+    private var biome: String = ""
+    private var launchTime: Double = -100.0
+
+    fun show(newBiome: String) {
+        this.biome = newBiome
+        this.launchTime = Util.getMillis() / 1000.0
+    }
+
     override fun extractRenderState(graphics: GuiGraphicsExtractor, tickCounter: DeltaTracker) {
+        val currentTime = Util.getMillis() / 1000.0
+
         val colorBg = Integer.parseUnsignedInt("FF191919", 16)
         val colorBorder = Integer.parseUnsignedInt("FF464648", 16)
         val font = Minecraft.getInstance().font
 
         val primaryTextColor = Integer.parseUnsignedInt("FFFFFFFF", 16)
         val secondaryTextColor = Integer.parseUnsignedInt("FFD9D9D9", 16)
-
-        renderRoundedRectangle(graphics, x, y, width, height, colorBg, colorBorder)
-        graphics.centeredText(font, Component.literal("Now entering"), x + width / 2, y + 4, secondaryTextColor)
-        graphics.centeredText(font, Component.literal(biome), x + width / 2, y + 15, primaryTextColor)
+        if (currentTime - launchTime <= 5.0) {
+            renderRoundedRectangle(graphics, x, y, width, height, colorBg, colorBorder)
+            graphics.centeredText(font, Component.literal("Now entering"), x + width / 2, y + 4, secondaryTextColor)
+            graphics.centeredText(font, Component.literal(biome), x + width / 2, y + 15, primaryTextColor)
+        }
     }
 
     private fun renderRoundedRectangle(
@@ -40,7 +54,6 @@ class NewBiomeWidget(
     ) {
         val startOffsets = listOf(2, 1, 1)
 
-        println("Drawing biome widget: $startX $startY $width $height $colorBg $colorBorder")
         for (i in startY..<(startY + height)) {
             val distFromEdge = minOf(i - startY, startY + height - 1 - i)
             val offset = if (distFromEdge < startOffsets.size) startOffsets[distFromEdge] else 0
