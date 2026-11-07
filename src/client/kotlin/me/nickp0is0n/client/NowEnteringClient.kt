@@ -16,7 +16,7 @@ import net.minecraft.world.level.biome.Biome
 
 object NowEnteringClient : ClientModInitializer {
 
-    private val biomeWidget = NewBiomeWidget(100, 0, 100, 27)
+    private val biomeWidget = NewBiomeWidget(100, 10, 100, 27)
 
     override fun onInitializeClient() {
         HudElementRegistry.attachElementBefore(
