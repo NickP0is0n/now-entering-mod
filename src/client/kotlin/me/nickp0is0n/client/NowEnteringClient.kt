@@ -38,7 +38,7 @@ object NowEnteringClient : ClientModInitializer {
         val translationKey = "biome.${newBiomeId.namespace}.${newBiomeId.path}"
         val localizedName = Component.translatable(translationKey).string
         HudElementRegistry.attachElementBefore(
-            VanillaHudElements.CHAT, NowEntering.id("before_chat"),
+            VanillaHudElements.CHAT, NowEntering.id("biome_changed"),
             NewBiomeWidget(100, 0, 100, 100, localizedName)
         )
     }

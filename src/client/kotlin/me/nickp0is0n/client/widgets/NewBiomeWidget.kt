@@ -41,22 +41,24 @@ class NewBiomeWidget(
         val startOffsets = listOf(3, 1, 1)
         val endOffsets = startOffsets.reversed()
 
+        println("Drawing biome widget: $startX $startY $width $height $colorBg $colorBorder")
         for (i in startY..(startY + height)) {
+            print("Drawing line $i ")
             when (i) {
                 startY -> {
-                    graphics.fill(startX + startOffsets[0], i, startX + width - startOffsets[0], i, colorBorder)
+                    graphics.fill(startX + startOffsets[0], i, startX + width - startOffsets[0], i + 1, colorBorder)
                 }
 
                 (startY + height - 1) -> {
-                    graphics.fill(startX + endOffsets[2], i, startX + width - endOffsets[2], i, colorBorder)
+                    graphics.fill(startX + endOffsets[2], i, startX + width - endOffsets[2], i + 1, colorBorder)
                 }
 
                 else -> {
                     val positionStartX = startX + if (i < startOffsets.size) startOffsets[i] else 0
                     val positionEndX = startX + width - if (i < startOffsets.size) startOffsets[i] else 0
-                    graphics.fill(positionStartX, i, positionStartX, i, colorBorder)
-                    graphics.fill(positionEndX, i, positionEndX, i, colorBorder)
-                    graphics.fill(positionStartX + 1, i, positionEndX - 1, i, colorBg)
+                    graphics.fill(positionStartX, i, positionStartX, i + 1, colorBorder)
+                    graphics.fill(positionEndX, i, positionEndX, i + 1, colorBorder)
+                    graphics.fill(positionStartX + 1, i, positionEndX - 1, i + 1, colorBg)
                 }
             }
         }
