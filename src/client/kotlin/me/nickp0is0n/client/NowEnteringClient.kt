@@ -14,6 +14,8 @@ import net.minecraft.resources.Identifier
 import net.minecraft.world.level.biome.Biome
 
 object NowEnteringClient : ClientModInitializer {
+    var biomeChangedWidgetActive = false
+
     override fun onInitializeClient() {
         var lastBiomeId: Identifier? = null
 
@@ -37,9 +39,13 @@ object NowEnteringClient : ClientModInitializer {
         println("Biome changed: $newBiomeId")
         val translationKey = "biome.${newBiomeId.namespace}.${newBiomeId.path}"
         val localizedName = Component.translatable(translationKey).string
-        HudElementRegistry.attachElementBefore(
-            VanillaHudElements.CHAT, NowEntering.id("biome_changed"),
-            NewBiomeWidget(100, 0, 100, 100, localizedName)
-        )
+
+        if (!biomeChangedWidgetActive) {
+            HudElementRegistry.attachElementBefore(
+                VanillaHudElements.CHAT, NowEntering.id("biome_changed"),
+                NewBiomeWidget(100, 0, 100, 27, localizedName)
+            )
+            biomeChangedWidgetActive = true
+        }
     }
 }

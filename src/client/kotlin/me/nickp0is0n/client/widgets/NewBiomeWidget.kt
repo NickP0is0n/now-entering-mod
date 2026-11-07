@@ -25,8 +25,8 @@ class NewBiomeWidget(
         val secondaryTextColor = Integer.parseUnsignedInt("FFD9D9D9", 16)
 
         renderRoundedRectangle(graphics, x, y, width, height, colorBg, colorBorder)
-        graphics.centeredText(font, Component.literal("Now entering"), x + 1, y + 4, secondaryTextColor)
-        graphics.centeredText(font, Component.literal(biome), x + 1, y + 15, primaryTextColor)
+        graphics.centeredText(font, Component.literal("Now entering"), x + width / 2, y + 4, secondaryTextColor)
+        graphics.centeredText(font, Component.literal(biome), x + width / 2, y + 15, primaryTextColor)
     }
 
     private fun renderRoundedRectangle(
@@ -38,27 +38,24 @@ class NewBiomeWidget(
         colorBg: Int,
         colorBorder: Int
     ) {
-        val startOffsets = listOf(3, 1, 1)
-        val endOffsets = startOffsets.reversed()
+        val startOffsets = listOf(2, 1, 1)
 
         println("Drawing biome widget: $startX $startY $width $height $colorBg $colorBorder")
-        for (i in startY..(startY + height)) {
-            print("Drawing line $i ")
-            when (i) {
-                startY -> {
-                    graphics.fill(startX + startOffsets[0], i, startX + width - startOffsets[0], i + 1, colorBorder)
-                }
+        for (i in startY..<(startY + height)) {
+            val distFromEdge = minOf(i - startY, startY + height - 1 - i)
+            val offset = if (distFromEdge < startOffsets.size) startOffsets[distFromEdge] else 0
 
-                (startY + height - 1) -> {
-                    graphics.fill(startX + endOffsets[2], i, startX + width - endOffsets[2], i + 1, colorBorder)
+            when (i) {
+                startY, (startY + height - 1) -> {
+                    graphics.fill(startX + offset, i, startX + width - offset + 1, i + 1, colorBorder)
                 }
 
                 else -> {
-                    val positionStartX = startX + if (i < startOffsets.size) startOffsets[i] else 0
-                    val positionEndX = startX + width - if (i < startOffsets.size) startOffsets[i] else 0
-                    graphics.fill(positionStartX, i, positionStartX, i + 1, colorBorder)
-                    graphics.fill(positionEndX, i, positionEndX, i + 1, colorBorder)
-                    graphics.fill(positionStartX + 1, i, positionEndX - 1, i + 1, colorBg)
+                    val positionStartX = startX + offset
+                    val positionEndX = startX + width - offset
+                    graphics.fill(positionStartX, i, positionStartX + 1, i + 1, colorBorder)
+                    graphics.fill(positionEndX, i, positionEndX + 1, i + 1, colorBorder)
+                    graphics.fill(positionStartX + 1, i, positionEndX, i + 1, colorBg)
                 }
             }
         }
