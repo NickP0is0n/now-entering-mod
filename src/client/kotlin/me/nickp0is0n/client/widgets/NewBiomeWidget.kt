@@ -1,14 +1,22 @@
 package me.nickp0is0n.client.widgets
 
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+import net.minecraft.client.DeltaTracker
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.AbstractWidget
 import net.minecraft.client.gui.narration.NarrationElementOutput
 import net.minecraft.network.chat.Component
 
-class NewBiomeWidget(x: Int, y: Int, width: Int, height: Int, private val biome: String) :
-    AbstractWidget(x, y, width, height, Component.empty()) {
-    override fun extractWidgetRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
+class NewBiomeWidget(
+    private val x: Int,
+    private val y: Int,
+    private val width: Int,
+    private val height: Int,
+    private val biome: String
+) :
+    HudElement {
+    override fun extractRenderState(graphics: GuiGraphicsExtractor, tickCounter: DeltaTracker) {
         val colorBg = Integer.parseUnsignedInt("FF191919", 16)
         val colorBorder = Integer.parseUnsignedInt("FF464648", 16)
         val font = Minecraft.getInstance().font
@@ -40,7 +48,7 @@ class NewBiomeWidget(x: Int, y: Int, width: Int, height: Int, private val biome:
                 }
 
                 (startY + height - 1) -> {
-                    graphics.fill(startX + endOffsets[3], i, startX + width - endOffsets[3], i, colorBorder)
+                    graphics.fill(startX + endOffsets[2], i, startX + width - endOffsets[2], i, colorBorder)
                 }
 
                 else -> {
@@ -52,9 +60,5 @@ class NewBiomeWidget(x: Int, y: Int, width: Int, height: Int, private val biome:
                 }
             }
         }
-    }
-
-    override fun updateWidgetNarration(output: NarrationElementOutput) {
-        TODO("Not yet implemented")
     }
 }
